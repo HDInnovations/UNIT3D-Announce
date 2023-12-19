@@ -36,6 +36,8 @@ impl Map {
                     torrents.info_hash as `info_hash: InfoHash`
                 FROM
                     torrents
+                WHERE
+                    torrents.deleted_at IS NULL
             "#
         )
         .fetch_all(db)

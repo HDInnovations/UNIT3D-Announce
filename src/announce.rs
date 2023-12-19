@@ -630,7 +630,9 @@ pub async fn announce(
         || tracker.freeleech_tokens.read().contains(&FreeleechToken {
             user_id,
             torrent_id,
-        }) {
+        })
+        || user.is_donor
+    {
         0
     } else {
         download_factor
@@ -681,7 +683,7 @@ pub async fn announce(
         queries.downloaded,
         queries.left == 0,
         queries.event != Event::Stopped,
-        group.is_immune,
+        group.is_immune || user.is_donor,
         completed_at,
     );
 

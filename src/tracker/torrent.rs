@@ -81,6 +81,8 @@ impl Map {
                     featured_torrents
                 ON
                     torrents.id = featured_torrents.torrent_id
+                WHERE
+                    torrents.deleted_at IS NULL
             "#
         )
         .fetch_all(db)

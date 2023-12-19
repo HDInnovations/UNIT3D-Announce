@@ -373,8 +373,9 @@ pub async fn announce(
             _ => (),
         }
 
-        // Make sure user isn't leeching more torrents than their group allows
+        // Make sure user isn't leeching more torrents than their group allows unless they are a lifetime user
         let has_hit_download_slot_limit = queries.left > 0
+            && !user.is_lifetime
             && matches!(group.download_slots, Some(slots) if slots <= user.num_leeching);
 
         // Change of upload/download compared to previous announce
@@ -678,6 +679,7 @@ pub async fn announce(
             .featured_torrents
             .read()
             .contains(&FeaturedTorrent { torrent_id })
+        || user.is_donor
     {
         0
     } else {
@@ -740,7 +742,7 @@ pub async fn announce(
         queries.downloaded,
         queries.left == 0,
         queries.event != Event::Stopped,
-        group.is_immune,
+        group.is_immune || user.is_donor,
         completed_at,
     );
 
